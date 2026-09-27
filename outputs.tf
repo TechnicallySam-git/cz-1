@@ -3,10 +3,10 @@ output "alb_dns_name" {
   value       = aws_lb.web.dns_name
 }
 
-output "database_endpoint" {
-  description = "Private endpoint of the MariaDB instance"
-  value       = aws_db_instance.mariadb.endpoint
-}
+# output "database_endpoint" {
+#   description = "Private endpoint of the MariaDB instance"
+#   value       = aws_db_instance.mariadb.endpoint
+# }
 
 output "vpc_id" {
   description = "ID of the application VPC"
