@@ -29,7 +29,7 @@ variable "web_ami_id" {
 variable "web_instance_type" {
   description = "EC2 instance type for the web Auto Scaling Group"
   type        = string
-  default     = "t3.micro"
+  default     = "t4g.micro"
 }
 
 variable "db_engine_version" {
