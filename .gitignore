@@ -8,5 +8,5 @@
 crash.log
 crash.*.log
 cz-1.code-workspace
-.json
+*.json
 updated-policy.json

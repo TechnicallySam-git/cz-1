@@ -1,7 +1,6 @@
 resource "aws_vpc_peering_connection" "spoke_to_hub" {
   vpc_id      = aws_vpc.spoke.id
   peer_vpc_id = var.hub_vpc_id
-  peer_region = var.region
   auto_accept = var.auto_accept_peering
 
   tags = {
