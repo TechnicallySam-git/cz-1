@@ -48,7 +48,7 @@ resource "aws_security_group" "web" {
     protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
-ingress {
+  ingress {
     description = "Node exporter scrape from the hub monitoring instance"
     from_port   = 9100
     to_port     = 9100
