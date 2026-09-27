@@ -6,6 +6,15 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action to run'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
 
 permissions:
   contents: read
@@ -20,6 +29,7 @@ env:
 jobs:
   plan:
     name: Terraform plan
+    if: github.event_name != 'workflow_dispatch' || inputs.action == 'apply'
     runs-on: [self-hosted, Linux, ARM64]
 
     steps:
@@ -50,7 +60,7 @@ jobs:
 
   apply:
     name: Terraform apply
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'apply'
     needs: plan
     runs-on: [self-hosted, Linux, ARM64]
 
@@ -71,3 +81,21 @@ jobs:
 
       - name: Terraform apply
         run: terraform apply -input=false tfplan
+
+  destroy:
+    name: Terraform destroy
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'destroy'
+    runs-on: [self-hosted, Linux, ARM64]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform destroy
+        run: terraform destroy -input=false -auto-approve
