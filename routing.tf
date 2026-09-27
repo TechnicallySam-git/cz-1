@@ -162,3 +162,10 @@ resource "aws_vpc_endpoint" "ec2messages" {
     project = "Case Study 1"
   }
 }
+
+
+resource "aws_route" "hub_priv_to_spoke" {
+  route_table_id            = "var.hub_route_priv-table_id"
+  destination_cidr_block    = "10.0.0.0/16"
+  vpc_peering_connection_id = aws_vpc_peering_connection.spoke_to_hub.id
+}

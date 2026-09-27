@@ -15,6 +15,19 @@ variable "hub_vpc_id" {
   type        = string
 }
 
+variable "hub_vpc_cidr" {
+  description = "CIDR block of the existing VPC 2 used as the peering target"
+  type        = string
+  default     = "10.1.0.0/28"
+}
+
+variable "hub_route_priv-table_id" {
+  description = "Route table ID of the private route table in VPC 2"
+  type        = string
+  default     = " rtb-09307dea035fe3f92"
+}
+
+
 variable "auto_accept_peering" {
   description = "Whether this account can automatically accept the VPC peering request"
   type        = bool

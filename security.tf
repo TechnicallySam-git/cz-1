@@ -15,6 +15,13 @@ resource "aws_security_group" "alb" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    description = "Node exporter scrape from the hub monitoring instance"
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = [var.hub_vpc_cidr]
+  }
 
   egress {
     from_port   = 0
@@ -41,7 +48,13 @@ resource "aws_security_group" "web" {
     protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
-
+ingress {
+    description = "Node exporter scrape from the hub monitoring instance"
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = [var.hub_vpc_cidr]
+  }
   egress {
     from_port   = 0
     to_port     = 0
