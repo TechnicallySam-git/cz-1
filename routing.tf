@@ -5,7 +5,7 @@ resource "aws_vpc_peering_connection" "spoke_to_hub" {
   auto_accept = var.auto_accept_peering
 
   tags = {
-    Name    = "${var.vpc_name}-to-hub-peering"
+    Name    = "${var.vpc_name}-to-vpc-hub-1-peering"
     project = "Case Study 1"
   }
 }
@@ -19,7 +19,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name    = "public-routes-${var.vpc_name}"
+    Name    = "public-rt-${var.vpc_name}"
     project = "Case Study 1"
   }
 }
@@ -43,7 +43,7 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name    = "private-routes-${var.vpc_name}"
+    Name    = "private-rt-${var.vpc_name}"
     project = "Case Study 1"
   }
 }
@@ -67,7 +67,7 @@ resource "aws_route_table" "database" {
   }
 
   tags = {
-    Name    = "database-routes-${var.vpc_name}"
+    Name    = "db-rt-${var.vpc_name}"
     project = "Case Study 1"
   }
 }
@@ -80,4 +80,19 @@ resource "aws_route_table_association" "database_1" {
 resource "aws_route_table_association" "database_2" {
   subnet_id      = aws_subnet.db_2.id
   route_table_id = aws_route_table.database.id
+}
+
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.spoke.id
+  service_name = "com.amazonaws.${var.region}.s3"
+
+  route_table_ids = [
+    aws_route_table.private.id
+  ]
+
+  tags = {
+    Name    = "${var.vpc_name}-s3-endpoint"
+    project = "Case Study 1"
+  }
 }

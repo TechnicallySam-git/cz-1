@@ -50,6 +50,13 @@ variable "db_name" {
   default     = "ticketdb"
 }
 
+variable "db_password" {
+  description = "MariaDB master password"
+  type        = string
+  sensitive   = true
+  default     = "ChickenStock2026$#@!~"
+}
+
 variable "skip_final_snapshot" {
   description = "Skip the final snapshot when the database is destroyed"
   type        = bool

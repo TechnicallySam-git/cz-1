@@ -3,6 +3,11 @@ resource "aws_security_group" "alb" {
   description = "Allow public web traffic to the load balancer"
   vpc_id      = aws_vpc.spoke.id
 
+  tags = {
+    Name    = "${var.vpc_name}-alb-sg"
+    project = "Case Study 1"
+  }
+
   ingress {
     description = "HTTP from the internet"
     from_port   = 80
@@ -24,6 +29,11 @@ resource "aws_security_group" "web" {
   description = "Allow web traffic only from the public load balancer"
   vpc_id      = aws_vpc.spoke.id
 
+  tags = {
+    Name    = "${var.vpc_name}-web-sg"
+    project = "Case Study 1"
+  }
+
   ingress {
     description     = "HTTP from the ALB"
     from_port       = 80
@@ -44,6 +54,11 @@ resource "aws_security_group" "db" {
   name        = "${var.vpc_name}-db-sg"
   description = "Allow MariaDB only from the web servers"
   vpc_id      = aws_vpc.spoke.id
+
+  tags = {
+    Name    = "${var.vpc_name}-db-sg"
+    project = "Case Study 1"
+  }
 
   ingress {
     description     = "MariaDB from the web tier"

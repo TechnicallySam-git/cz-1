@@ -1,6 +1,3 @@
-# Copy this block into backend.tf after creating the state bucket.
-# Do not put credentials in this file.
-
 terraform {
   backend "s3" {
     bucket       = "bkt-cs1-build"
