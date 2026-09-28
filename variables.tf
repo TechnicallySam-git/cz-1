@@ -3,7 +3,7 @@ variable "region" {
   type        = string
   default     = "eu-central-1"
 }
-
+##################################################################################################################
 variable "vpc_name" {
   description = "Name used as the prefix for VPC resources"
   type        = string
@@ -18,15 +18,71 @@ variable "hub_vpc_id" {
 variable "hub_vpc_cidr" {
   description = "CIDR block of the existing VPC 2 used as the peering target"
   type        = string
+  default     = "10.1.0.0/16"
+}
+
+variable "hub_route_pub_table_cidr" {
+  description = "Route table ID of the public route table in VPC 2"
+  type        = string
   default     = "10.1.0.0/28"
 }
 
-variable "hub_route_priv-table_id" {
+variable "hub_route_priv_table_cidr" {
   description = "Route table ID of the private route table in VPC 2"
   type        = string
-  default     = " rtb-09307dea035fe3f92"
+  default     = "10.1.1.0/28"
 }
 
+
+variable "hub_route_priv_table_id" {
+  description = "Route table ID of the private route table in VPC 2"
+  type        = string
+  default     = "rtb-09307dea035fe3f92"
+}
+##################################################################################################################
+variable "spoke-vpc-cidr" {
+  description = "CIDR block of the VPC 1"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "spoke-route-pub-1-table-cidr" {
+  description = "Route table ID of the public route table in VPC 1"
+  type        = string
+  default     = "10.0.10.0/28"
+}
+
+variable "spoke-route-pub-2-table-cidr" {
+  description = "Route table ID of the public route table in VPC 1"
+  type        = string
+  default     = "10.0.11.0/28"
+}
+
+
+
+variable "spoke-route-priv-1-table-cidr" {
+  description = "Route table ID of the private route table in VPC 1"
+  type        = string
+  default     = "10.0.1.0/28"
+}
+
+variable "spoke-route-priv-2-table-cidr" {
+  description = "Route table ID of the private route table in VPC 1"
+  type        = string
+  default     = "10.0.2.0/28"
+}
+
+variable "spoke-route-db-table-cidr" {
+  description = "Route table ID of the database route table in VPC 1"
+  type        = string
+  default     = "10.0.20.0/28"
+}
+
+variable "spoke-route-db-2-table-cidr" {
+  description = "Route table ID of the database route table in VPC 1"
+  type        = string
+  default     = "10.0.20.0/28"
+}
 
 variable "auto_accept_peering" {
   description = "Whether this account can automatically accept the VPC peering request"
