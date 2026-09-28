@@ -71,7 +71,7 @@ variable "spoke-route-priv-2-table-cidr" {
   type        = string
   default     = "10.0.2.0/28"
 }
-
+#############################################################
 variable "spoke-route-db-table-cidr" {
   description = "Route table ID of the database route table in VPC 1"
   type        = string
@@ -81,7 +81,7 @@ variable "spoke-route-db-table-cidr" {
 variable "spoke-route-db-2-table-cidr" {
   description = "Route table ID of the database route table in VPC 1"
   type        = string
-  default     = "10.0.20.0/28"
+  default     = "10.0.21.0/28"
 }
 
 variable "auto_accept_peering" {
