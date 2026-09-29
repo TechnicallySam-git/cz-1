@@ -22,7 +22,7 @@ resource "aws_launch_template" "web" {
     ENV
     systemctl restart app.service
     EOF
-  )  
+  )
 
   tags = {
     Name    = "${var.vpc_name}-web-launch-template"

@@ -39,8 +39,8 @@ resource "aws_db_instance" "mariadb" {
   db_name  = var.db_name
   username = var.db_username
 
-  password = var.db_password
-  apply_immediately = true
+  password               = var.db_password
+  apply_immediately      = true
   parameter_group_name   = aws_db_parameter_group.mariadb.name
   db_subnet_group_name   = aws_db_subnet_group.mariadb.name
   vpc_security_group_ids = [aws_security_group.db.id]
