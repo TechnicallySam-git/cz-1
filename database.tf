@@ -24,27 +24,43 @@ resource "aws_db_subnet_group" "mariadb" {
 }
 
 resource "aws_db_instance" "mariadb" {
-  identifier                  = "${var.vpc_name}-mariadb"
-  allocated_storage           = 20
-  max_allocated_storage       = 0
-  storage_type                = "gp2"
-  storage_encrypted           = true
-  engine                      = data.aws_rds_engine_version.mariadb.engine
-  engine_version              = data.aws_rds_engine_version.mariadb.version
-  instance_class              = "db.t4g.micro"
-  availability_zone           = data.aws_availability_zones.available.names[0]
-  multi_az                    = false
-  db_name                     = var.db_name
-  username                    = var.db_username
-  manage_master_user_password = true
-  db_subnet_group_name        = aws_db_subnet_group.mariadb.name
-  vpc_security_group_ids      = [aws_security_group.db.id]
-  publicly_accessible         = false
+  identifier            = "${var.vpc_name}-mariadb"
+  allocated_storage     = 20
+  max_allocated_storage = 0
+  storage_type          = "gp2"
+  storage_encrypted     = true
+  kms_key_id            = aws_kms_key.rds.arn
 
+  engine         = data.aws_rds_engine_version.mariadb.engine
+  engine_version = data.aws_rds_engine_version.mariadb.version
+  instance_class = "db.t4g.micro"
+  multi_az       = false
 
+  db_name  = var.db_name
+  username = var.db_username
+
+  manage_master_user_password   = true
+  master_user_secret_kms_key_id = aws_kms_key.rds.arn
+
+  parameter_group_name   = aws_db_parameter_group.mariadb.name
+  db_subnet_group_name   = aws_db_subnet_group.mariadb.name
+  vpc_security_group_ids = [aws_security_group.db.id]
+  publicly_accessible    = false
+
+  backup_retention_period = 7
+  skip_final_snapshot     = true
 
   tags = {
     Name    = "${var.vpc_name}-mariadb"
     project = "Case Study 1"
   }
+}
+
+resource "aws_kms_alias" "rds" {
+  name          = "alias/spoke-prod-1-rds"
+  target_key_id = aws_kms_key.rds.key_id
+}
+resource "aws_kms_key" "rds" {
+  description         = "RDS encryption key"
+  enable_key_rotation = true
 }
