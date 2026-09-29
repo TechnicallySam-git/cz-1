@@ -123,7 +123,7 @@ variable "db_password" {
   description = "MariaDB master password"
   type        = string
   sensitive   = true
-  default     = "ChickenStock2026~!#$"
+  default     = "Kf7xQm2Rt9LpW4vZc8Hn3YdB"
 }
 
 variable "skip_final_snapshot" {
