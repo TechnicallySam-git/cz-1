@@ -2,11 +2,27 @@ resource "aws_launch_template" "web" {
   name_prefix   = "${var.vpc_name}-web-"
   image_id      = var.web_ami_id
   instance_type = var.web_instance_type
+
   iam_instance_profile {
     name = "ec2-get-bucket"
   }
 
   vpc_security_group_ids = [aws_security_group.web.id]
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    umask 077
+    cat > /etc/app.env <<ENV
+    DB_HOST=${aws_db_instance.mariadb.address}
+    DB_PORT=3306
+    DB_NAME=${var.db_name}
+    DB_USER=${var.db_username}
+    DB_PASSWORD=${var.db_password}
+    FLASK_SECRET_KEY=admin
+    APP_PASSWORD=changeme
+    ENV
+    systemctl restart app.service
+    EOF
+  )
 
   tags = {
     Name    = "${var.vpc_name}-web-launch-template"
