@@ -10,3 +10,4 @@ crash.*.log
 cz-1.code-workspace
 *.json
 updated-policy.json
+/website/
