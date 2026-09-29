@@ -41,13 +41,13 @@ resource "aws_security_group" "web" {
     project = "Case Study 1"
   }
 
-  ingress {
-    description     = "HTTP from the ALB"
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb.id]
-  }
+  # ingress {
+  #   description     = "HTTP from the ALB"
+  #   from_port       = 80
+  #   to_port         = 80
+  #   protocol        = "tcp"
+  #   security_groups = [aws_security_group.alb.id]
+  # }
   ingress {
     description = "Node exporter scrape from the hub monitoring instance"
     from_port   = 9100
