@@ -1,0 +1,71 @@
+name: Application Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'website/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: eu-central-1
+  S3_BUCKET: bkt-cs1-build
+  ASG_NAME: spoke-prod-1-web-asg
+jobs:
+  deploy:
+    name: Deploy application
+    runs-on: [self-hosted, Linux, ARM64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check web infrastructure
+        run: |
+          ASG_STATUS=$(aws autoscaling describe-auto-scaling-groups \
+            --auto-scaling-group-names "${{ env.ASG_NAME }}" \
+            --query 'AutoScalingGroups[0].AutoScalingGroupName' \
+            --output text \
+            --region "${{ env.AWS_REGION }}")
+
+          if [ "$ASG_STATUS" = "None" ] || [ -z "$ASG_STATUS" ]; then
+            echo "Web infrastructure is not deployed."
+            echo "Deploy the Terraform infrastructure before deploying the application."
+            exit 1
+          fi
+
+          IN_SERVICE=$(aws autoscaling describe-auto-scaling-groups \
+            --auto-scaling-group-names "${{ env.ASG_NAME }}" \
+            --query 'AutoScalingGroups[0].Instances[?LifecycleState==`InService`].InstanceId | length(@)' \
+            --output text \
+            --region "${{ env.AWS_REGION }}")
+
+          if [ "$IN_SERVICE" -lt 1 ]; then
+            echo "The Auto Scaling Group exists but has no InService instances."
+            echo "Wait for the infrastructure deployment to finish."
+            exit 1
+          fi
+
+          echo "Web infrastructure is available. Continuing deployment."
+
+      - name: Upload application to S3
+        run: |
+          aws s3 sync ./website \
+            s3://${{ env.S3_BUCKET }}/app/ \
+            --delete
+
+      - name: Start rolling deployment
+        run: |
+          aws autoscaling start-instance-refresh \
+            --auto-scaling-group-name ${{ env.ASG_NAME }} \
+            --preferences MinHealthyPercentage=50 \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Verify deployment
+        run: |
+          aws s3 ls s3://${{ env.S3_BUCKET }}/app/

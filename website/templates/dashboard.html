@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Instance Dashboard</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 2rem; }
+    .card { background: #1e293b; padding: 1.5rem 2rem; border-radius: 12px; max-width: 500px; margin: 0 auto 1.5rem; }
+    h2 { margin-top: 0; }
+    .row { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid #334155; }
+    .label { color: #94a3b8; }
+    .ok { color: #4ade80; }
+    .bad { color: #f87171; }
+    .warn { color: #fbbf24; }
+    a.logout { color: #38bdf8; text-decoration: none; display: block; text-align: center; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>EC2 Instance Info</h2>
+    {% if instance.error %}
+      <div class="bad">Error fetching metadata: {{ instance.error }}</div>
+    {% else %}
+      <div class="row"><span class="label">Instance ID</span><span>{{ instance.instance_id }}</span></div>
+      <div class="row"><span class="label">Instance Type</span><span>{{ instance.instance_type }}</span></div>
+      <div class="row"><span class="label">Availability Zone</span><span>{{ instance.availability_zone }}</span></div>
+      <div class="row"><span class="label">Private IP</span><span>{{ instance.private_ip }}</span></div>
+      <div class="row"><span class="label">Hostname</span><span>{{ instance.hostname }}</span></div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Database Connection</h2>
+    {% if db.status == "connected" %}
+      <div class="row"><span class="label">Status</span><span class="ok">✅ Connected</span></div>
+      <div class="row"><span class="label">Version</span><span>{{ db.version }}</span></div>
+      <div class="row"><span class="label">Host</span><span>{{ db.host }}</span></div>
+      <div class="row"><span class="label">Port</span><span>{{ db.port }}</span></div>
+    {% elif db.status == "unreachable" %}
+      <div class="row"><span class="label">Status</span><span class="bad">❌ Unreachable</span></div>
+      <div class="row"><span class="label">Host</span><span>{{ db.host }}</span></div>
+      <div class="row"><span class="label">Error</span><span>{{ db.error }}</span></div>
+    {% elif db.status == "reachable but login failed" %}
+      <div class="row"><span class="label">Status</span><span class="warn">⚠️ Reachable, login failed</span></div>
+      <div class="row"><span class="label">Host</span><span>{{ db.host }}</span></div>
+      <div class="row"><span class="label">Error</span><span>{{ db.error }}</span></div>
+    {% else %}
+      <div class="row"><span class="label">Status</span><span class="warn">⚠️ Not configured</span></div>
+    {% endif %}
+  </div>
+
+  <a class="logout" href="{{ url_for('logout') }}">Log out</a>
+</body>
+</html>
