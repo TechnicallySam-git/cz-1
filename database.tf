@@ -1,0 +1,65 @@
+data "aws_rds_engine_version" "mariadb" {
+  engine  = "mariadb"
+  version = var.db_engine_version
+}
+
+resource "aws_db_parameter_group" "mariadb" {
+  name   = "${var.vpc_name}-mariadb"
+  family = data.aws_rds_engine_version.mariadb.parameter_group_family
+
+  tags = {
+    Name    = "${var.vpc_name}-mariadb"
+    project = "Case Study 1"
+  }
+}
+
+resource "aws_db_subnet_group" "mariadb" {
+  name       = "${var.vpc_name}-db-subnet-group"
+  subnet_ids = [aws_subnet.db_1.id, aws_subnet.db_2.id]
+
+  tags = {
+    Name    = "${var.vpc_name}-db-subnet-group"
+    project = "Case Study 1"
+  }
+}
+
+resource "aws_db_instance" "mariadb" {
+  identifier            = "${var.vpc_name}-mariadb"
+  allocated_storage     = 20
+  max_allocated_storage = 0
+  storage_type          = "gp2"
+  storage_encrypted     = true
+  kms_key_id            = aws_kms_key.rds.arn
+
+  engine         = data.aws_rds_engine_version.mariadb.engine
+  engine_version = data.aws_rds_engine_version.mariadb.version
+  instance_class = "db.t4g.micro"
+  multi_az       = false
+
+  db_name  = var.db_name
+  username = var.db_username
+
+  password               = var.db_password
+  apply_immediately      = true
+  parameter_group_name   = aws_db_parameter_group.mariadb.name
+  db_subnet_group_name   = aws_db_subnet_group.mariadb.name
+  vpc_security_group_ids = [aws_security_group.db.id]
+  publicly_accessible    = false
+
+  backup_retention_period = 7
+  skip_final_snapshot     = true
+
+  tags = {
+    Name    = "${var.vpc_name}-mariadb"
+    project = "Case Study 1"
+  }
+}
+
+resource "aws_kms_alias" "rds" {
+  name          = "alias/spoke-prod-1-rds"
+  target_key_id = aws_kms_key.rds.key_id
+}
+resource "aws_kms_key" "rds" {
+  description         = "RDS encryption key"
+  enable_key_rotation = true
+}

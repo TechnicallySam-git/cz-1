@@ -60,6 +60,14 @@ resource "aws_route_table_association" "private_2" {
 resource "aws_route_table" "database" {
   vpc_id = aws_vpc.spoke.id
 
+<<<<<<< HEAD
+=======
+  route {
+    cidr_block                = var.hub_route_priv_table_cidr
+    vpc_peering_connection_id = aws_vpc_peering_connection.spoke_to_hub.id
+  }
+
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
   tags = {
     Name    = "db-rt-${var.vpc_name}"
     project = "Case Study 1"
@@ -90,7 +98,35 @@ resource "aws_vpc_endpoint" "s3" {
   }
 }
 
+<<<<<<< HEAD
 
+=======
+resource "aws_security_group" "vpc_endpoints" {
+  name        = "${var.vpc_name}-vpce-sg"
+  description = "Allow HTTPS from web tier to SSM interface endpoints"
+  vpc_id      = aws_vpc.spoke.id
+
+  ingress {
+    description     = "HTTPS from web tier"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.web.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name    = "${var.vpc_name}-vpce-sg"
+    project = "Case Study 1"
+  }
+}
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
 
 resource "aws_vpc_endpoint" "ssm" {
   vpc_id              = aws_vpc.spoke.id

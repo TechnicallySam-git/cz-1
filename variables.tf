@@ -22,13 +22,21 @@ variable "hub_vpc_cidr" {
 }
 
 variable "hub_route_pub_table_cidr" {
+<<<<<<< HEAD
   description = "Route table CIDR of the public route table in VPC 2"
+=======
+  description = "Route table ID of the public route table in VPC 2"
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
   type        = string
   default     = "10.1.0.0/28"
 }
 
 variable "hub_route_priv_table_cidr" {
+<<<<<<< HEAD
   description = "Route table CIDR of the private route table in VPC 2"
+=======
+  description = "Route table ID of the private route table in VPC 2"
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
   type        = string
   default     = "10.1.1.0/28"
 }
@@ -37,6 +45,10 @@ variable "hub_route_priv_table_cidr" {
 variable "hub_route_priv_table_id" {
   description = "Route table ID of the private route table in VPC 2"
   type        = string
+<<<<<<< HEAD
+=======
+  default     = "rtb-09307dea035fe3f92"
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
 }
 ##################################################################################################################
 variable "spoke-vpc-cidr" {
@@ -122,6 +134,10 @@ variable "db_password" {
   description = "MariaDB master password"
   type        = string
   sensitive   = true
+<<<<<<< HEAD
+=======
+  default     = "Kf7xQm2Rt9LpW4vZc8Hn3YdB"
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
 }
 
 variable "skip_final_snapshot" {

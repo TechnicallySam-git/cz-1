@@ -8,11 +8,17 @@ resource "aws_launch_template" "web" {
   }
 
   vpc_security_group_ids = [aws_security_group.web.id]
+<<<<<<< HEAD
 
   user_data = base64encode(<<-EOF
     #!/bin/bash
     umask 077
 
+=======
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    umask 077
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
     cat > /etc/app.env <<ENV
     DB_HOST=${aws_db_instance.mariadb.address}
     DB_PORT=3306
@@ -22,7 +28,10 @@ resource "aws_launch_template" "web" {
     FLASK_SECRET_KEY=admin
     APP_PASSWORD=changeme
     ENV
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
     systemctl restart app.service
     EOF
   )
@@ -34,7 +43,10 @@ resource "aws_launch_template" "web" {
 
   tag_specifications {
     resource_type = "instance"
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
     tags = {
       Name    = "${var.vpc_name}-web"
       project = "Case Study 1"
@@ -43,14 +55,21 @@ resource "aws_launch_template" "web" {
   }
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
 resource "aws_autoscaling_group" "web" {
   name                = "${var.vpc_name}-web-asg"
   min_size            = 1
   desired_capacity    = 2
   max_size            = 4
   vpc_zone_identifier = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+<<<<<<< HEAD
   target_group_arns    = [aws_lb_target_group.web.arn]
+=======
+  target_group_arns   = [aws_lb_target_group.web.arn]
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
   health_check_type   = "ELB"
 
   launch_template {
@@ -78,6 +97,7 @@ resource "aws_autoscaling_group" "web" {
     }
   }
 }
+<<<<<<< HEAD
 
 
 resource "aws_autoscaling_policy" "web_cpu" {
@@ -93,3 +113,5 @@ resource "aws_autoscaling_policy" "web_cpu" {
     target_value = 70
   }
 }
+=======
+>>>>>>> 7c45929e03076bd37d39c164ee8ba677a95e2945
