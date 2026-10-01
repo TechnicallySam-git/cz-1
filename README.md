@@ -1,13 +1,64 @@
-# Case Study 1 infrastructure
+# CS1 – Terraform & Application Automation
 
-This root module creates VPC 1 with public ALB subnets, private web subnets, and private database subnets. It also creates a VPC peering connection to the existing hub VPC 2.
+This repository contains the Infrastructure as Code and application deployment automation for Case Study 1.
 
-## Traffic flow
+## Terraform
 
-- Internet traffic enters the public ALB through the Internet Gateway.
-- The ALB forwards HTTP traffic to the web Auto Scaling Group in private subnets.
-- Web servers connect to MariaDB in the DB subnets on port 3306.
-- VPC 1 private and database subnets route `10.1.0.0/16` through the peering connection.
-- No NAT Gateway or NAT instance is configured.
+Terraform is used to deploy and manage the AWS infrastructure.
 
-Before applying, copy `terraform.tfvars.example` to `terraform.tfvars` and provide the existing VPC 2 ID and the pre-baked web AMI ID.
+The infrastructure consists of:
+
+* Hub and spoke VPCs connected through VPC peering
+* Public subnets for the Application Load Balancer
+* Private subnets for the web servers
+* Private database subnets for MariaDB RDS
+* Auto Scaling Group for the web servers
+* VPC endpoints for AWS services
+* Security groups controlling communication between components
+* KMS encryption for the database
+
+Terraform state is stored in an S3 backend.
+
+## Application Deployment
+
+Application deployment is automated through GitHub Actions.
+
+When changes are pushed to `main` that affect `website/`, the workflow:
+
+1. Checks that the web infrastructure is available.
+2. Uploads the application to S3.
+3. Starts an Auto Scaling instance refresh.
+4. New instances retrieve the application from S3 during startup.
+5. The Application Load Balancer checks the new instances.
+
+This uses a **rolling deployment** so instances are replaced gradually.
+
+## Terraform CI/CD
+
+Terraform is also managed through GitHub Actions.
+
+Pull requests run `terraform plan` to validate and preview infrastructure changes.
+
+Changes pushed to `main` automatically run the Terraform plan and apply.
+
+Terraform can also be manually applied or destroyed through the workflow.
+
+The workflows run on a self-hosted GitHub Actions runner in the hub VPC.
+
+## Monitoring
+
+The web servers expose metrics through Node Exporter.
+
+Prometheus runs in the hub VPC and discovers the web instances automatically. Grafana is used for monitoring and visualization.
+
+Current alerts cover high CPU usage and unreachable web instances.
+
+## Repository Structure
+
+The Terraform configuration is split into files for networking, routing, security, compute, load balancing, database resources, variables, providers and outputs.
+
+The application is located in `website/`.
+
+## Technologies
+
+AWS, Terraform, GitHub Actions, EC2, Auto Scaling, Application Load Balancer, S3, MariaDB RDS, Prometheus, Grafana and Node Exporter.
