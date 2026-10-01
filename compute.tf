@@ -43,7 +43,7 @@ resource "aws_launch_template" "web" {
 
 resource "aws_autoscaling_group" "web" {
   name                = "${var.vpc_name}-web-asg"
-  min_size            = 1
+  min_size            = 2
   desired_capacity    = 2
   max_size            = 4
   vpc_zone_identifier = [aws_subnet.private_1.id, aws_subnet.private_2.id]
