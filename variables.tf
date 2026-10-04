@@ -129,3 +129,8 @@ variable "skip_final_snapshot" {
   type        = bool
   default     = true
 }
+
+variable "domain_name" {
+  type    = string
+  default = "holidayparks.live"
+}

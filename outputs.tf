@@ -17,3 +17,11 @@ output "vpc_peering_connection_id" {
   description = "ID of the VPC peering connection to VPC 2"
   value       = aws_vpc_peering_connection.spoke_to_hub.id
 }
+
+output "alb_arn_suffix" {
+  value = aws_lb.web.arn_suffix
+}
+
+output "target_group_arn_suffix" {
+  value = aws_lb_target_group.web.arn_suffix
+}
