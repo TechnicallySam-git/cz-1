@@ -134,3 +134,8 @@ variable "domain_name" {
   type    = string
   default = "holidayparks.live"
 }
+
+variable "certificate_arn" {
+  type    = string
+  default = "arn:aws:acm:eu-central-1:660637682717:certificate/eba07de4-02dd-4811-a4eb-89167486cb9c"
+}
