@@ -1,9 +1,3 @@
-data "aws_acm_certificate" "main" {
-  domain      = "holidayparks.live"
-  statuses    = ["ISSUED"]
-  most_recent = true
-}
-
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.web.arn
   port              = 443
